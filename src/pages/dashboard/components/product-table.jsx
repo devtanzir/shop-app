@@ -50,10 +50,10 @@ const ProductTable = ({ searchTerm }) => {
                 Price
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Published
+                Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Available
+                In Stock
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -76,13 +76,13 @@ const ProductTable = ({ searchTerm }) => {
                       {product.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {product.price}
+                      {Number(product.price)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {product.published ? "true" : "false"}
+                      {product.published ? "Published" : "Unpublished"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {product.qty}
+                      {Number(product.qty)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button

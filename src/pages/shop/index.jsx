@@ -11,9 +11,10 @@ import Footer from "../../components/footer";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Loader from "../../components/shared/loader";
 
 const ShopPage = () => {
-  const { publishedProducts } = useSelector((state) => state.product);
+  const { publishedProducts, loading } = useSelector((state) => state.product);
 
   // Local state for sorting and pagination
   const [sortOrder, setSortOrder] = useState("");
@@ -44,6 +45,14 @@ const ShopPage = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <Loader text="Please wait..." size={40} color="text-green-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -108,7 +117,7 @@ const ShopPage = () => {
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full aspect-[3/4] object-cover hover:scale-125 transition duration-700 hover:rotate-6 cursor-pointer"
+                        className="w-full aspect-[3/4] object-cover hover:scale-125 transition duration-700 cursor-pointer"
                       />
                     </Link>
                     <button className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">

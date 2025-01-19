@@ -13,8 +13,8 @@ const CreateForm = () => {
   // Initial form state
   const initialState = {
     name: "",
-    price: 0,
-    qty: 0,
+    price: "",
+    qty: "",
     published: false,
   };
 
@@ -51,6 +51,14 @@ const CreateForm = () => {
 
     // Validate required fields
     if (!formData.name || formData.price < 0 || formData.qty < 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Invalid Credentials.",
+      });
+      return;
+    }
+    if (!productPhoto) {
       Swal.fire({
         icon: "error",
         title: "Validation Error",
@@ -145,6 +153,7 @@ const CreateForm = () => {
           <Input
             type="number"
             name="price"
+            placeholder={"Price"}
             onChange={handleChange}
             value={formData.price}
           />
@@ -156,6 +165,7 @@ const CreateForm = () => {
           <Input
             type="number"
             name="qty"
+            placeholder={"Quantity"}
             onChange={handleChange}
             value={formData.qty}
           />
@@ -181,7 +191,9 @@ const CreateForm = () => {
         {/* Submit Button */}
         <button
           disabled={loading}
-          className="rounded-md px-4 py-2 text-white transition-colors hover:bg-orange-600 bg-orange-700"
+          className={`rounded-md px-4 py-2 text-white transition-colors hover:bg-orange-600 bg-orange-700 ${
+            loading ? "cursor-not-allowed" : "cursor-pointer"
+          }`}
         >
           {loading ? (
             <span className="flex justify-center items-center">

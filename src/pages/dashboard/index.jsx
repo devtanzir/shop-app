@@ -4,9 +4,11 @@ import { Link } from "react-router-dom";
 
 import CreateForm from "../../components/shared/create-form";
 import ProductTable from "./components/product-table";
+import { useSelector } from "react-redux";
+import Loader from "../../components/shared/loader";
 
 const Dashboard = () => {
-  const [editingUser, setEditingUser] = useState(null);
+  const { loading } = useSelector((state) => state.product);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -15,7 +17,13 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <Loader text="Please wait..." size={40} color="text-green-500" />
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col h-screen bg-gray-100 lg:flex-row">
       {/* Sidebar */}
@@ -101,64 +109,6 @@ const Dashboard = () => {
           {/* Product List */}
           <ProductTable searchTerm={searchTerm} />
         </div>
-
-        {/* Edit User Modal */}
-        {editingUser && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
-              <h3 className="text-xl font-semibold mb-4">Edit User</h3>
-              <form onSubmit={() => {}}>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  className="w-full border rounded px-3 py-2 mb-2"
-                  value={editingUser.name}
-                  onChange={(e) =>
-                    setEditingUser({ ...editingUser, name: e.target.value })
-                  }
-                  required
-                />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="w-full border rounded px-3 py-2 mb-2"
-                  value={editingUser.email}
-                  onChange={(e) =>
-                    setEditingUser({ ...editingUser, email: e.target.value })
-                  }
-                  required
-                />
-                <select
-                  className="w-full border rounded px-3 py-2 mb-4"
-                  value={editingUser.role}
-                  onChange={(e) =>
-                    setEditingUser({ ...editingUser, role: e.target.value })
-                  }
-                  required
-                >
-                  <option value="Admin">Admin</option>
-                  <option value="Editor">Editor</option>
-                  <option value="Viewer">Viewer</option>
-                </select>
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditingUser(null)}
-                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
