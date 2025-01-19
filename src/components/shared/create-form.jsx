@@ -169,6 +169,7 @@ const CreateForm = () => {
               type="checkbox"
               id="published"
               value={formData.published}
+              checked={formData.published}
               onChange={handleChange}
               name="published"
               className="sr-only peer"

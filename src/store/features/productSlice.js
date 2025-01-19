@@ -12,6 +12,7 @@ const productSlice = createSlice({
   name: "product",
   initialState: {
     products: [],
+    publishedProducts: [],
     success: false,
     error: null,
     loading: false,
@@ -25,12 +26,18 @@ const productSlice = createSlice({
     builder
       .addCase(find.fulfilled, (state, action) => {
         state.products = action.payload;
+        state.publishedProducts = action.payload.filter(
+          (item) => item.published
+        );
         state.success = true;
         state.error = null;
         state.loading = false;
       })
       .addCase(create.fulfilled, (state, action) => {
         state.products.push(action.payload);
+        if (action.payload.published) {
+          state.publishedProducts.push(action.payload);
+        }
         state.success = true;
         state.error = null;
         state.loading = false;
@@ -39,18 +46,43 @@ const productSlice = createSlice({
         state.products = state.products.filter(
           (data) => data.id !== action.payload
         );
+        state.publishedProducts = state.publishedProducts.filter(
+          (data) => data.id !== action.payload
+        );
       })
       .addCase(update.fulfilled, (state, action) => {
         const productsIndex = state.products.findIndex(
-          (products) => products.id === action.payload.id
+          (product) => product.id === action.payload.id
         );
+        const publishedIndex = state.publishedProducts.findIndex(
+          (product) => product.id === action.payload.id
+        );
+
+        // Update or add the product in products
         if (productsIndex > -1) {
           state.products[productsIndex] = action.payload;
+        } else {
+          state.products.push(action.payload);
         }
+
+        // Update publishedProducts based on the published status
+        if (action.payload.published) {
+          if (publishedIndex > -1) {
+            state.publishedProducts[publishedIndex] = action.payload;
+          } else {
+            state.publishedProducts.push(action.payload);
+          }
+        } else {
+          if (publishedIndex > -1) {
+            state.publishedProducts.splice(publishedIndex, 1);
+          }
+        }
+
         state.success = true;
         state.error = null;
         state.loading = false;
       })
+
       .addCase(update.pending, (state) => {
         state.loading = true;
         state.success = null;

@@ -8,64 +8,42 @@ import Tags from "./components/tags";
 import Pagination from "../../components/shared/pagination";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const ShopPage = () => {
-  const products = [
-    {
-      name: "PREMIUM NOTCH BLAZER",
-      price: "$79.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "PREMIUM SUIT BLAZER",
-      price: "$199.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "VINTAGE SWEATSHIRT",
-      price: "$99.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "LONGLINE JERSEY JACKET",
-      price: "$69.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "TAILORED BLAZER",
-      price: "$129.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "OVERCOAT IN CAMEL",
-      price: "$89.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "JACKET WITH FRINGE",
-      price: "$36.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "NOTCH BLAZER IN LONGLINE",
-      price: "$159.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-    {
-      name: "WAISTCOAT IN NAVY",
-      price: "$209.99",
-      image:
-        "https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp",
-    },
-  ];
+  const { publishedProducts } = useSelector((state) => state.product);
+
+  // Local state for sorting and pagination
+  const [sortOrder, setSortOrder] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
+  // Sorting logic
+  const sortedProducts = [...publishedProducts].sort((a, b) => {
+    if (sortOrder === "lowToHigh") return a.price - b.price;
+    if (sortOrder === "highToLow") return b.price - a.price;
+    return 0;
+  });
+
+  // Pagination logic
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
+  const paginatedProducts = sortedProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Handle sorting change
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+    setCurrentPage(1); // Reset to the first page on sort change
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -105,40 +83,53 @@ const ShopPage = () => {
           <div className="lg:flex-1">
             <div className="flex justify-between items-center mb-10">
               <p className="text-[13px] text-[#666]">
-                DISPLAYING 1-9 OF 18 RESULTS
+                DISPLAYING {paginatedProducts.length} OF{" "}
+                {publishedProducts.length} RESULTS
               </p>
               <div className="relative">
-                <select className="appearance-none border border-[#E7E7E7] h-[40px] pl-4 pr-10 text-[13px] text-[#666] focus:outline-none min-w-[180px]">
-                  <option>SORT BY</option>
-                  <option>Price: Low to High</option>
-                  <option>Price: High to Low</option>
+                <select
+                  value={sortOrder}
+                  onChange={handleSortChange}
+                  className="appearance-none border border-[#E7E7E7] h-[40px] pl-4 pr-10 text-[13px] text-[#666] focus:outline-none min-w-[180px]"
+                >
+                  <option value="">SORT BY</option>
+                  <option value="lowToHigh">Price: Low to High</option>
+                  <option value="highToLow">Price: High to Low</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666] pointer-events-none" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-              {products.map((product) => (
+              {paginatedProducts.map((product) => (
                 <div key={product.name} className="group">
                   <div className="relative overflow-hidden mb-4">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full aspect-[3/4] object-cover hover:scale-125 transition duration-700 hover:rotate-6 cursor-pointer"
-                    />
+                    <Link to={`/product/${product.id}`}>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full aspect-[3/4] object-cover hover:scale-125 transition duration-700 hover:rotate-6 cursor-pointer"
+                      />
+                    </Link>
                     <button className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <Heart className="w-4 h-4" />
                     </button>
                   </div>
-                  <h3 className="text-base text-[#666]  tracking-[1.5px] cursor-pointer hover:text-primary transition duration-200">
-                    {product.name}
+                  <h3 className="text-base text-[#666]  tracking-[1.5px] cursor-pointer hover:text-primary transition duration-200 line-clamp-1">
+                    <Link to={`/product/${product.id}`}>{product.name}</Link>
                   </h3>
-                  <p className="text-sm text-slate-400 mt-1">{product.price}</p>
+                  <p className="text-sm text-slate-400 mt-1">
+                    ${product.price}
+                  </p>
                 </div>
               ))}
             </div>
 
-            <Pagination />
+            <Pagination
+              totalPages={totalPages}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
           </div>
         </div>
       </div>
@@ -147,4 +138,5 @@ const ShopPage = () => {
     </div>
   );
 };
+
 export default ShopPage;

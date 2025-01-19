@@ -61,53 +61,66 @@ const ProductTable = ({ searchTerm }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredProducts.map((product) => (
-              <Fragment key={product.id}>
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <img
-                      src={product.image || PlaceholderImage}
-                      alt={product.name}
-                      className="w-16 h-16 rounded object-cover"
-                    />
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {product.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {product.price}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {product.published ? "true" : "false"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{product.qty}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                      onClick={() => {
-                        setProductId(product.id);
-                        handleToggle();
-                      }}
-                      className="text-indigo-600 hover:text-indigo-900 mr-2"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </td>
-                </tr>
-                <Modal
-                  open={open}
-                  handleToggle={handleToggle}
-                  formValue={filteredProducts.find(
-                    (post) => post.id === productId
-                  )}
-                />
-              </Fragment>
-            ))}
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <Fragment key={product.id}>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <img
+                        src={product.image || PlaceholderImage}
+                        alt={product.name}
+                        className="w-16 h-16 rounded object-cover"
+                      />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {product.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {product.price}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {product.published ? "true" : "false"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {product.qty}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => {
+                          setProductId(product.id);
+                          handleToggle();
+                        }}
+                        className="text-indigo-600 hover:text-indigo-900 mr-2"
+                      >
+                        <Pencil className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </td>
+                  </tr>
+                  <Modal
+                    open={open}
+                    handleToggle={handleToggle}
+                    formValue={filteredProducts.find(
+                      (post) => post.id === productId
+                    )}
+                  />
+                </Fragment>
+              ))
+            ) : (
+              <tr>
+                <td
+                  className="px-6 py-4 whitespace-nowrap text-center"
+                  colSpan={6}
+                >
+                  No Data Found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

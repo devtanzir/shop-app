@@ -1,31 +1,25 @@
-const Pagination = () => {
+import PropTypes from "prop-types";
+const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   return (
-    <>
-      <div className="flex justify-center mt-16 space-x-1">
-        <button className="w-8 h-8 flex items-center justify-center border border-[#E7E7E7] text-[#666] hover:bg-black hover:text-white">
-          ‹
+    <div className="flex justify-center mt-8">
+      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        <button
+          key={page}
+          onClick={() => onPageChange(page)}
+          className={`px-3 py-1 mx-1 rounded ${
+            currentPage === page ? "bg-primary text-white" : "bg-gray-200"
+          }`}
+        >
+          {page}
         </button>
-        <button className="w-8 h-8 flex items-center justify-center border border-[#E7E7E7] bg-[#EF2D56] text-white">
-          1
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center border border-[#E7E7E7] text-[#666] hover:bg-black hover:text-white">
-          2
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center border border-[#E7E7E7] text-[#666] hover:bg-black hover:text-white">
-          3
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center border border-[#E7E7E7] text-[#666] hover:bg-black hover:text-white">
-          4
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center border border-[#E7E7E7] text-[#666] hover:bg-black hover:text-white">
-          5
-        </button>
-        <button className="w-8 h-8 flex items-center justify-center border border-[#E7E7E7] text-[#666] hover:bg-black hover:text-white">
-          ›
-        </button>
-      </div>
-    </>
+      ))}
+    </div>
   );
 };
 
+Pagination.propTypes = {
+  totalPages: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+};
 export default Pagination;
